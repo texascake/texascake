@@ -19,8 +19,8 @@ jobs:
           USERNAME: ${{ github.repository_owner }}
       - name: Commit & Push
         run: |
-          git config user.email "Tiktodz@soulvibe-team.cloud"
-          git config user.name texascake
+          git config user.email "tiktodz@soulvibe-team.cloud"
+          git config user.name "texascake"
           # Gerrit Code Review
           curl -Lo .git/hooks/commit-msg https://gerrit-review.googlesource.com/tools/hooks/commit-msg
           chmod u+x .git/hooks/commit-msg
