@@ -1,5 +1,3 @@
-## Hi there 👋
-
 <p align="center" >
 	<picture>
 	  <source media="(prefers-color-scheme: dark)"  srcset="https://raw.githubusercontent.com/texascake/texascake/output-3d-contrib/night.svg" />
@@ -7,6 +5,3 @@
 	  <img alt="github profile contributions chart"    src="https://raw.githubusercontent.com/texascake/texascake/output-3d-contrib/day.svg" />
 	</picture>
 </p>
-
-<p align="center">
-  <a href="https://github.com/DenverCoder1/readme-typing-svg"><img src="https://readme-typing-svg.herokuapp.com/?lines=Ada%20aoa%20banh?%20lu%20dev%20gedean%20ya?&color=25B31EFF&vCenter=true&size=22"></a></p>
