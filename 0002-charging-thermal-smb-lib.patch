@@ -1,0 +1,38 @@
+From: Kernel Hacking <dev@local>
+Date: Sun, 26 Jul 2026
+Subject: [PATCH 2/3] power: smb-lib: Prevent charging hard stop on thermal peak
+
+Modifikasi smblib_set_prop_system_temp_level() di smb-lib.c:
+1. Parallel charging tetap aktif di semua thermal level
+2. Pada thermal level tertinggi, gunakan floor 1000mA daripada stop total
+3. Charging tidak pernah benar-benar berhenti karena thermal daemon
+
+Sebelum: Level tertinggi = chg_disable (stop charging sepenuhnya)
+Sesudah: Level tertinggi = FCC minimum dari tabel (1000mA)
+---
+ drivers/power/supply/smb-lib.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/power/supply/smb-lib.c b/drivers/power/supply/smb-lib.c
+--- a/drivers/power/supply/smb-lib.c
++++ b/drivers/power/supply/smb-lib.c
+@@ -2082,14 +2082,16 @@ int smblib_set_prop_system_temp_level(struct smb_charger *chg,
+ 	chg->system_temp_level = val->intval;
+-	/* disable parallel charge in case of system temp level */
+-	vote(chg->pl_disable_votable, THERMAL_DAEMON_VOTER,
+-			chg->system_temp_level ? true : false, 0);
++	/* Keep parallel charging active at all thermal levels */
++	vote(chg->pl_disable_votable, THERMAL_DAEMON_VOTER, false, 0);
+ 
+-	if (chg->system_temp_level == chg->thermal_levels)
+-		return vote(chg->chg_disable_votable,
+-			THERMAL_DAEMON_VOTER, true, 0);
++	/* At peak thermal level: use floor current instead of hard stop */
++	if (chg->system_temp_level == chg->thermal_levels) {
++		vote(chg->chg_disable_votable, THERMAL_DAEMON_VOTER, false, 0);
++		return vote(chg->fcc_votable, THERMAL_DAEMON_VOTER, true,
++			chg->thermal_mitigation[chg->thermal_levels - 1]);
++	}
+ 
+ 	vote(chg->chg_disable_votable, THERMAL_DAEMON_VOTER, false, 0);
+ 	if (chg->system_temp_level == 0)
