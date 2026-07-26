@@ -1,0 +1,29 @@
+From: Kernel Hacking <dev@local>
+Date: Sun, 26 Jul 2026
+Subject: [PATCH 3/3] arm64: dts: sdm660: Raise msm_thermal throttle thresholds
+
+Naikkan threshold suhu di msm_thermal DTS agar thermal daemon lebih
+lambat mengirim sinyal throttle ke charger. Sebelumnya daemon mulai
+throttle di ~42°C, setelah modifikasi baru terasa signifikan di ~60°C.
+
+CATATAN: Sesuaikan nama file DTS dengan hasil perintah berikut:
+  grep -rn "qcom,limit-temp" arch/arm64/boot/dts/
+File yang umum: sdm660-mtp.dtsi, msm8998-mtp.dtsi, atau sdm660.dtsi
+---
+ arch/arm64/boot/dts/qcom/sdm660-X00TD.dtsi | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm660-X00TD.dtsi b/arch/arm64/boot/dts/qcom/sdm660-X00TD.dtsi
+--- a/arch/arm64/boot/dts/qcom/sdm660-X00TD.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm660-X00TD.dtsi
+@@ -1,8 +1,6 @@
+ &msm_thermal {
+-	qcom,limit-temp = <60>;
+-	qcom,temp-hysteresis = <10>;
+-	qcom,core-limit-temp = <80>;
+-	qcom,core-temp-hysteresis = <10>;
++	qcom,limit-temp = <75>;
++	qcom,temp-hysteresis = <10>;
++	qcom,core-limit-temp = <90>;
++	qcom,core-temp-hysteresis = <10>;
+ };
